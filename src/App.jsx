@@ -15,44 +15,44 @@ function App() {
       Array(9).fill(null)
     )
 
-    const [turn, setTurn] = useState(TURNOS.X)
+  const [turn, setTurn] = useState(TURNOS.X)
 
     //null es que no hay ganador, false es que hay un empate
-    const [winner, setWinner] = useState(null)
+  const [winner, setWinner] = useState(null)
 
 
-    const resetGame = () =>{
+  const resetGame = () =>{
       setBoard(Array(9).fill(null))
       setTurn(TURNOS.X)
       setWinner(null)
-    }
+  }
 
-    const updateBoard = (index)=>{
+  const updateBoard = (index)=>{
 
-      // no se actualiza la posición si ya tiene algo
-      if(board[index] || winner) return
+    // no se actualiza la posición si ya tiene algo
+    if(board[index] || winner) return
 
       //actualiza el tablero
-      const newBoard = [...board]
+    const newBoard = [...board]
       newBoard[index] = turn
       setBoard(newBoard)
 
-      // cambia el turno
-      const newTurn = turn === TURNOS.X ? TURNOS.O : TURNOS.X
+    // cambia el turno
+    const newTurn = turn === TURNOS.X ? TURNOS.O : TURNOS.X
       setTurn(newTurn)
 
       //revisar si hay un ganador
-      const newWinner = checkWinnerFrom(newBoard)
-      if(newWinner){
+    const newWinner = checkWinnerFrom(newBoard)
+    if(newWinner){
         setWinner(newWinner) 
         confetti ()
-        // La actualización de los estados es async, por ende no bloquea la ejecución del alert()
-        // alert(`El ganador es: ${newWinner}`) -> sale antes de la actualización del estado.
-        // console.log(winner); -> si quiero ver el winner, me sale null, porque como la actualización del estado es async carga el console.log antes de que se actualice
-      }else if (checkEndGameFrom(newBoard)){
+      // La actualización de los estados es async, por ende no bloquea la ejecución del alert()
+      // alert(`El ganador es: ${newWinner}`) -> sale antes de la actualización del estado.
+      // console.log(winner); -> si quiero ver el winner, me sale null, porque como la actualización del estado es async carga el console.log antes de que se actualice
+    }else if (checkEndGameFrom(newBoard)){
         setWinner(false)
-      }
     }
+  }
 
   return (
     <main className="board">
