@@ -55,9 +55,6 @@ function App() {
       turn: newTurn
     })
 
-    window.localStorage.setItem('board', JSON.stringify(newBoard))
-    window.localStorage.setItem('turn', newTurn)
-
 
       // revisar si hay un ganador
     const newWinner = checkWinnerFrom(newBoard)
