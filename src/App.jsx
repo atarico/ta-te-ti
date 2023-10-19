@@ -5,17 +5,24 @@ import { Board } from "./components/Board"
 import { Turns } from "./components/Turns"
 import { WinnerModal } from "./components/WinnerModal"
 import { TURNOS } from "./constants"
+import { resetGameToLocalStorages, saveGameToLocalStorage } from "./logic/storage"
 import { checkEndGameFrom, checkWinnerFrom } from "./logic/win-end"
 
 
 
 function App() {
 
-  const [board, setBoard] = useState(
-      Array(9).fill(null)
-    )
+  const [board, setBoard] = useState( ()=>{
+    const boardFromStorage = window.localStorage.getItem("board")
 
-  const [turn, setTurn] = useState(TURNOS.X)
+    return boardFromStorage ? JSON.parse(boardFromStorage) : Array(9).fill(null)
+    
+  } )
+
+  const [turn, setTurn] = useState(()=>{
+    const turnFromStorage = window.localStorage.getItem("turn")
+    return turnFromStorage ?? TURNOS.X
+  })
 
     //null es que no hay ganador, false es que hay un empate
   const [winner, setWinner] = useState(null)
@@ -25,11 +32,12 @@ function App() {
       setBoard(Array(9).fill(null))
       setTurn(TURNOS.X)
       setWinner(null)
+      resetGameToLocalStorages()
   }
 
   const updateBoard = (index)=>{
 
-    // no se actualiza la posición si ya tiene algo
+      // no se actualiza la posición si ya tiene algo
     if(board[index] || winner) return
 
       //actualiza el tablero
@@ -37,15 +45,25 @@ function App() {
       newBoard[index] = turn
       setBoard(newBoard)
 
-    // cambia el turno
+      // cambia el turno
     const newTurn = turn === TURNOS.X ? TURNOS.O : TURNOS.X
       setTurn(newTurn)
+      
+      // Guardar partida
+    saveGameToLocalStorage({
+      board: newBoard,
+      turn: newTurn
+    })
 
-      //revisar si hay un ganador
+    window.localStorage.setItem('board', JSON.stringify(newBoard))
+    window.localStorage.setItem('turn', newTurn)
+
+
+      // revisar si hay un ganador
     const newWinner = checkWinnerFrom(newBoard)
     if(newWinner){
-        setWinner(newWinner) 
-        confetti ()
+      setWinner(newWinner) 
+      confetti ()
       // La actualización de los estados es async, por ende no bloquea la ejecución del alert()
       // alert(`El ganador es: ${newWinner}`) -> sale antes de la actualización del estado.
       // console.log(winner); -> si quiero ver el winner, me sale null, porque como la actualización del estado es async carga el console.log antes de que se actualice
