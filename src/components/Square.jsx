@@ -1,9 +1,8 @@
 // eslint-disable-next-line react/prop-types
-export  const Square = ({children, isSelected, updateBoard, index}) =>{
+export const Square = ({ children, isSelected, updateBoard, index }) => {
+  const className = `square ${isSelected ? 'is-selected' : ''}`
 
-  const className = `square ${ isSelected ? 'is-selected': '' }`
-
-  const handleClick = () =>{
+  const handleClick = () => {
     updateBoard(index)
   }
 
